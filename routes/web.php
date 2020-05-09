@@ -34,8 +34,11 @@ Route::resource('state', 'StateController');
 //soilNutrition route
 Route::resource('soilNutrition', 'SoilNutritionController');
 
+//role
+Route::resource('roles', 'RoleController');
 
-
+//user
+Route::resource('users', 'UserController');
 
 Auth::routes();
 

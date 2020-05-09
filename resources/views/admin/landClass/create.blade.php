@@ -1,24 +1,37 @@
 @extends('admin.master')
 @section('content')
 
+    <!-- Content Header (User header) -->
+    <section class="content-header">
+        <h1>
+            Add Land Class
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            @can('landClassList',\Illuminate\Support\Facades\Auth::user())
+                <li class="active"><a href="{{ route('landClass.index') }}">Land Class's List</a></li>
+            @endcan
+        </ol>
+    </section>
+
     <section class="content">
         <div class="row">
             <!-- left column -->
             <div class="col-md-6">
                 <!-- general form elements -->
                 <div class="box box-primary">
-                    <div class="box-header with-border" style="text-align: center">
-                        <h3 class="box-title">Land Class Create</h3>
+                    <div class="box-header with-border">
                         @if(count($errors)>0)
-                            @foreach($errors->all() as $error)
-                                <div class="alert alert-danger">
-
-                                        <button type="button" class="close" data-dismiss="alert" aira-hidden="true">
-                                            &times;
-                                        </button>
-                                    {{$error}}
-                                </div>
-                            @endforeach
+                            <div class="alert alert-danger">
+                                <button type="button" class="close" data-dismiss="alert" aira-hidden="true">
+                                    &times;
+                                </button>
+                                <ul>
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         @endif
 
                     </div>

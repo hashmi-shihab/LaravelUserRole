@@ -33,7 +33,7 @@
             @endif
         </div>
         <!-- /.box-header -->
-        <div class="box-body">
+        <div class="box-body table-responsive no-padding">
             {{--<table id="example1" class="table table-bordered table-striped table-responsive">
                 <thead>
                 <tr>
@@ -313,7 +313,7 @@
                         <td>{{$fertility->sZn}}</td>--}}
 
 
-                        <td>
+                        <td nowarp>
 
                             <form action="{{route('fertilityClass.destroy',$fertility->id)}}" method="post">
                                 @csrf

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Texture;
 use Illuminate\Http\Request;
 use App\Http\Requests\TextureValidation;
+use Illuminate\Support\Facades\Auth;
 
 class TextureController extends Controller
 {
@@ -15,15 +16,21 @@ class TextureController extends Controller
 
     public function index()
     {
-        $textures = Texture::all();
+        if (Auth::user()->can('textureList')) {
+            $textures = Texture::all();
 
-        return view('admin.texture.list',compact('textures'));
+            return view('admin.texture.list',compact('textures'));
+            }
+        return view('admin.unauthorized');
     }
 
 
     public function create()
     {
-        return view('admin.texture.create');
+        if (Auth::user()->can('texture.create')) {
+            return view('admin.texture.create');
+            }
+        return view('admin.unauthorized');
     }
 
 
@@ -51,9 +58,12 @@ class TextureController extends Controller
 
     public function edit($id)
     {
-        $texture = Texture::find($id);
+        if (Auth::user()->can('texture.update')) {
+            $texture = Texture::find($id);
 
-        return view('admin.texture.edit',compact('texture'));
+            return view('admin.texture.edit',compact('texture'));
+            }
+        return view('admin.unauthorized');
     }
 
 
@@ -71,10 +81,13 @@ class TextureController extends Controller
 
     public function destroy($id)
     {
-        $texture = Texture::find($id);
-        $texture->delete();
-        session()->flash('message','has been deleted');
+        if (Auth::user()->can('texture.delete')) {
+            $texture = Texture::find($id);
+            $texture->delete();
+            session()->flash('message','has been deleted');
 
-        return redirect('texture');
+            return redirect('texture');
+            }
+        return view('admin.unauthorized');
     }
 }

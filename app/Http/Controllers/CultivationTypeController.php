@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\CultivationType;
 use Illuminate\Http\Request;
 use App\Http\Requests\CultivationTypeValidation;
+use Illuminate\Support\Facades\Auth;
 
 class CultivationTypeController extends Controller
 {
@@ -15,15 +16,21 @@ class CultivationTypeController extends Controller
 
     public function index()
     {
-        $cultivationTypes = CultivationType::all();
+        if (Auth::user()->can('cultivationTypeList')) {
+            $cultivationTypes = CultivationType::all();
 
-        return view('admin.cultivationType.list',compact('cultivationTypes'));
+            return view('admin.cultivationType.list',compact('cultivationTypes'));
+           }
+        return view('admin.unauthorized');
     }
 
 
     public function create()
     {
-        return view('admin.cultivationType.create');
+        if (Auth::user()->can('cultivationType.create')) {
+            return view('admin.cultivationType.create');
+            }
+        return view('admin.unauthorized');
     }
 
 
@@ -51,9 +58,12 @@ class CultivationTypeController extends Controller
 
     public function edit($id)
     {
-        $cultivationType = CultivationType::find($id);
+        if (Auth::user()->can('cultivationType.update')) {
+            $cultivationType = CultivationType::find($id);
 
-        return view('admin.cultivationType.edit',compact('cultivationType'));
+            return view('admin.cultivationType.edit',compact('cultivationType'));
+            }
+        return view('admin.unauthorized');
     }
 
 
@@ -73,12 +83,15 @@ class CultivationTypeController extends Controller
 
     public function destroy($id)
     {
-        $cultivationType = CultivationType::find($id);
-        $cultivationType->delete();
+        if (Auth::user()->can('cultivationType.delete')) {
+            $cultivationType = CultivationType::find($id);
+            $cultivationType->delete();
 
-        session()->flash('message','has been delete');
+            session()->flash('message','has been delete');
 
-        return redirect('cultivationType');
+            return redirect('cultivationType');
+            }
+        return view('admin.unauthorized');
 
     }
 }

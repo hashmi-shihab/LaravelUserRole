@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 25, 2019 at 06:34 AM
+-- Generation Time: May 09, 2020 at 07:05 AM
 -- Server version: 10.4.6-MariaDB
 -- PHP Version: 7.3.9
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `soil`
+-- Database: `laravel_user_role`
 --
 
 -- --------------------------------------------------------
@@ -105,7 +105,8 @@ CREATE TABLE `land_types` (
 --
 
 INSERT INTO `land_types` (`id`, `name_bn`, `name_en`, `created_at`, `updated_at`) VALUES
-(3, 'asadas', 'sdsds', '2019-11-19 00:57:32', '2019-11-19 00:57:32');
+(3, 'asadas', 'sdsds', '2019-11-19 00:57:32', '2019-11-19 00:57:32'),
+(4, 'hjffhg', 'hfjfghf', '2020-05-03 01:16:35', '2020-05-03 01:16:35');
 
 -- --------------------------------------------------------
 
@@ -137,7 +138,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (11, '2019_11_20_085047_create_fertility_classes_table', 10),
 (12, '2019_11_23_132146_create_soil_nutrition_table', 11),
 (13, '2019_11_24_085732_create_soil_nutrition_table', 12),
-(14, '2019_11_24_100456_create_old_soil_nutrition_table', 13);
+(14, '2019_11_24_100456_create_old_soil_nutrition_table', 13),
+(15, '2020_05_03_092259_create_roles_table', 14),
+(16, '2020_05_03_174258_create_permissions_table', 15),
+(17, '2020_05_03_175559_create_roles_table', 16),
+(18, '2020_05_03_180007_create_permissions_table', 17),
+(19, '2020_05_05_173520_create_user_roles_table', 18),
+(20, '2020_05_05_175111_create_permissions_table', 19),
+(21, '2020_05_06_062913_create_role_user_table', 20);
 
 -- --------------------------------------------------------
 
@@ -202,6 +210,199 @@ CREATE TABLE `password_resets` (
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `permissions`
+--
+
+CREATE TABLE `permissions` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `for` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `permissions`
+--
+
+INSERT INTO `permissions` (`id`, `name`, `for`, `created_at`, `updated_at`) VALUES
+(1, 'LandClassController-Create', 'Land Class', NULL, NULL),
+(2, 'LandClassController-List', 'Land Class', NULL, NULL),
+(3, 'LandClassController-Edit', 'Land Class', NULL, NULL),
+(4, 'LandClassController-Delete', 'Land Class', NULL, NULL),
+(5, 'LandTypeController-Create', 'Land Type', NULL, NULL),
+(6, 'LandTypeController-List', 'Land Type', NULL, NULL),
+(7, 'LandTypeController-Edit', 'Land Type', NULL, NULL),
+(8, 'LandTypeController-Delete', 'Land Type', NULL, NULL),
+(9, 'TextureController-Create', 'Texture', NULL, NULL),
+(10, 'TextureController-List', 'Texture', NULL, NULL),
+(11, 'TextureController-Edit', 'Texture', NULL, NULL),
+(12, 'TextureController-Delete', 'Texture', NULL, NULL),
+(13, 'CultivationTypeController-Create', 'Cultivation Type', NULL, NULL),
+(14, 'CultivationTypeController-List', 'Cultivation Type', NULL, NULL),
+(15, 'CultivationTypeController-Edit', 'Cultivation Type', NULL, NULL),
+(16, 'CultivationTypeController-Delete', 'Cultivation Type', NULL, NULL),
+(17, 'StateController-Create', 'State', NULL, NULL),
+(18, 'StateController-List', 'State', NULL, NULL),
+(19, 'StateController-Edit', 'State', NULL, NULL),
+(20, 'StateController-Deelete', 'State', NULL, NULL),
+(21, 'SoilNutritionController-Create', 'Soil Nutrition', NULL, NULL),
+(22, 'SoilNutritionController-List', 'Soil Nutrition', NULL, NULL),
+(23, 'SoilNutritionController-Edit', 'Soil Nutrition', NULL, NULL),
+(24, 'SoilNutritionController-Delete', 'Soil Nutrition', NULL, NULL),
+(25, 'RolesController-Create', 'Roles', NULL, NULL),
+(26, 'RolesController-List', 'Roles', NULL, NULL),
+(27, 'RolesController-Edit', 'Roles', NULL, NULL),
+(28, 'RolesController-Delete', 'Roles', NULL, NULL),
+(29, 'RolesController-Menu', 'Roles', NULL, NULL),
+(30, 'UsersController-Create', 'Users', NULL, NULL),
+(31, 'UsersController-List', 'Users', NULL, NULL),
+(32, 'UsersController-Edit', 'Users', NULL, NULL),
+(33, 'UsersController-Delete', 'Users', NULL, NULL),
+(34, 'UsersController-Menu', 'Users', NULL, NULL),
+(35, 'LandClassController-Menu', 'Land Class', NULL, NULL),
+(36, 'andTypeController-Menu', 'Land Type', NULL, NULL),
+(37, 'TextureController-Menu', 'Texture', NULL, NULL),
+(38, 'CultivationTypeController-Menu', 'Cultivation Type', NULL, NULL),
+(39, 'StateController-Menu', 'State', NULL, NULL),
+(40, 'SoilNutritionController-Menu', 'Soil Nutrition', NULL, NULL),
+(41, 'Configuration-Menu', 'Tag', NULL, NULL),
+(42, 'Properties-Menu', 'Tag', NULL, NULL),
+(43, 'Settings-Menu', 'Tag', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `permission_role`
+--
+
+CREATE TABLE `permission_role` (
+  `role_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `permission_role`
+--
+
+INSERT INTO `permission_role` (`role_id`, `permission_id`) VALUES
+(2, 1),
+(2, 2),
+(2, 3),
+(2, 4),
+(2, 5),
+(2, 6),
+(2, 7),
+(2, 8),
+(2, 9),
+(2, 10),
+(2, 11),
+(2, 12),
+(2, 13),
+(2, 14),
+(2, 15),
+(2, 16),
+(2, 17),
+(2, 18),
+(2, 19),
+(2, 20),
+(2, 21),
+(2, 22),
+(2, 23),
+(2, 24),
+(2, 35),
+(2, 36),
+(2, 37),
+(2, 38),
+(2, 39),
+(2, 40),
+(2, 25),
+(2, 26),
+(2, 27),
+(2, 28),
+(2, 29),
+(2, 30),
+(2, 31),
+(2, 32),
+(2, 33),
+(2, 34),
+(2, 41),
+(2, 42),
+(2, 43),
+(6, 35),
+(6, 1),
+(6, 5),
+(6, 36),
+(6, 41),
+(7, 21),
+(7, 22),
+(7, 23),
+(7, 24),
+(7, 40),
+(7, 42),
+(6, 2),
+(6, 6),
+(6, 3),
+(6, 4),
+(6, 7),
+(6, 8),
+(6, 30),
+(6, 31),
+(6, 32),
+(6, 33),
+(6, 34),
+(6, 43);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `roles`
+--
+
+CREATE TABLE `roles` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `roles`
+--
+
+INSERT INTO `roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(2, 'Admin', '2020-05-03 14:19:45', '2020-05-03 14:19:45'),
+(6, 'Staff', '2020-05-06 07:22:17', '2020-05-06 07:22:17'),
+(7, 'Editor', '2020-05-06 14:58:16', '2020-05-06 14:58:16');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `role_user`
+--
+
+CREATE TABLE `role_user` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `role_id` int(10) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `role_user`
+--
+
+INSERT INTO `role_user` (`id`, `user_id`, `role_id`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, NULL, NULL),
+(10, 6, 6, NULL, NULL),
+(12, 8, 7, NULL, NULL),
+(13, 8, 6, NULL, NULL),
+(14, 9, 6, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -339,7 +540,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Hashmi Shihab', 'hashmi@gmail.com', NULL, '$2y$10$5qODxjsObRt6rCvLcecQmOU61t2sxRfyKaJ7qlrkhLFHMqf0Gx2ie', NULL, '2019-11-18 00:28:53', '2019-11-18 00:28:53');
+(1, 'Hashmi Shihab', 'hashmi@gmail.com', NULL, '$2y$10$5qODxjsObRt6rCvLcecQmOU61t2sxRfyKaJ7qlrkhLFHMqf0Gx2ie', NULL, '2019-11-18 00:28:53', '2019-11-18 00:28:53'),
+(6, 'Ziadul', 'ziadul@gmail.com', NULL, '$2y$10$MiIgUDu.Pr3v4FYyAEDtl.FZZ6yDLxS3w/KSdHlnz0wKlRUHcJ3mS', NULL, '2020-05-06 03:44:52', '2020-05-06 03:44:52'),
+(8, 'Tanvir', 'tanvir@gmail.com', NULL, '$2y$10$BEsMc3ZRfa7oGzjShXVe.eERn7R7ynAvt0Ho/5fSzD0JmJW1b0OO.', NULL, '2020-05-06 14:57:46', '2020-05-06 14:57:46'),
+(9, 'Dip Ghosh', 'dip@gmail.com', NULL, '$2y$10$c04VWt71u5ZTunWh9qLUbeZ4U8fIxJkOfRqtkwX6jtw5CM8EA26I6', NULL, '2020-05-08 08:47:59', '2020-05-08 08:47:59');
 
 --
 -- Indexes for dumped tables
@@ -405,6 +609,24 @@ ALTER TABLE `old_soil_nutrition`
 --
 ALTER TABLE `password_resets`
   ADD KEY `password_resets_email_index` (`email`);
+
+--
+-- Indexes for table `permissions`
+--
+ALTER TABLE `permissions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `role_user`
+--
+ALTER TABLE `role_user`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `soil_nutrition`
@@ -482,19 +704,37 @@ ALTER TABLE `land_classes`
 -- AUTO_INCREMENT for table `land_types`
 --
 ALTER TABLE `land_types`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `old_soil_nutrition`
 --
 ALTER TABLE `old_soil_nutrition`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `permissions`
+--
+ALTER TABLE `permissions`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+
+--
+-- AUTO_INCREMENT for table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `role_user`
+--
+ALTER TABLE `role_user`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `soil_nutrition`
@@ -524,7 +764,7 @@ ALTER TABLE `upazilas`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\LandClass;
 use Illuminate\Http\Request;
 use App\Http\Requests\LandClassValidation;
+use Illuminate\Support\Facades\Auth;
 
 
 class LandClassController extends Controller
@@ -16,16 +17,24 @@ class LandClassController extends Controller
 
     public function index()
     {
-        $landClasses = LandClass::all();
+        if (Auth::user()->can('landClassList')) {
+            $landClasses = LandClass::all();
 
-        /*dd($landClasses);*/
-        return view('admin.landClass.list', compact('landClasses'));
+            /*dd($landClasses);*/
+            return view('admin.landClass.list', compact('landClasses'));
+        }
+        return view('admin.unauthorized');
+
     }
 
 
     public function create()
     {
-        return view('admin.landClass.create');
+        if (Auth::user()->can('landClass.create')) {
+            return view('admin.landClass.create');
+        }
+        return view('admin.unauthorized');
+
     }
 
 
@@ -71,11 +80,14 @@ class LandClassController extends Controller
 
     public function edit($id)
     {
-        $landClass = LandClass::find($id);
+        if (Auth::user()->can('landClass.update')) {
+            $landClass = LandClass::find($id);
 
-//        dd($landClass);
+    //        dd($landClass);
 
-        return view('admin.landClass.edit',compact('landClass'));
+            return view('admin.landClass.edit',compact('landClass'));
+         }
+        return view('admin.unauthorized');
     }
 
 
@@ -97,13 +109,17 @@ class LandClassController extends Controller
 
 
     public function destroy($id)
-    {/*dd($id);*/
-        $landClass = LandClass::find($id);
-//dd($landClass);
-        $landClass->delete();
+    {
+        if (Auth::user()->can('landClass.delete')) {
+            /*dd($id);*/
+            $landClass = LandClass::find($id);
+            //dd($landClass);
+            $landClass->delete();
 
-        session()->flash('message','has been deleted');
+            session()->flash('message','has been deleted');
 
-        return redirect('landClass');
+            return redirect('landClass');
+          }
+        return view('admin.unauthorized');
     }
 }

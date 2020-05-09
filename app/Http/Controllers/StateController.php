@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\State;
 use Illuminate\Http\Request;
 use App\Http\Requests\StateValidation;
+use Illuminate\Support\Facades\Auth;
 
 class StateController extends Controller
 {
@@ -14,15 +15,21 @@ class StateController extends Controller
 
     public function index()
     {
-        $states= State::all();
+          if (Auth::user()->can('stateList')) {
+            $states= State::all();
 
-        return view('admin.state.list',compact('states'));
+            return view('admin.state.list',compact('states'));
+            }
+        return view('admin.unauthorized');
     }
 
 
     public function create()
     {
-        return view('admin.state.create');
+        if (Auth::user()->can('state.create')) {
+            return view('admin.state.create');
+            }
+        return view('admin.unauthorized');
     }
 
 
@@ -49,8 +56,11 @@ class StateController extends Controller
 
     public function edit($id)
     {
-        $state=State::find($id);
-        return view('admin.state.edit',compact('state'));
+        if (Auth::user()->can('state.update')) {
+            $state=State::find($id);
+            return view('admin.state.edit',compact('state'));
+            }
+        return view('admin.unauthorized');
     }
 
 
@@ -68,9 +78,14 @@ class StateController extends Controller
 
     public function destroy($id)
     {
-        $state = State::find($id);
-        $state->delete();
+        if (Auth::user()->can('state.delete')) {
+            $state = State::find($id);
+            $state->delete();
 
-        return redirect('state');
+            return redirect('state');
+        }
+        return view('admin.unauthorized');
+
+
     }
 }

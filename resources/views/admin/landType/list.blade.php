@@ -1,83 +1,90 @@
 @extends('admin.master')
 @section('content')
 
-    <div class="box">
-        <div class="box-header" style="text-align: center">
-            <h3 class="box-title">Land Type List</h3>
-
-            @if(count($errors)>0)
-
-                <ul>
-                    @foreach($errors->all() as $error)
-
-                        <li class="alert alert-danger">{{$error}}</li>
-
-                    @endforeach
-                </ul>
-
-            @endif
+    <!-- Content Header (User header) -->
+    <section class="content-header">
+        <h1>
+            Land Types's List
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            @can('landTypeList',\Illuminate\Support\Facades\Auth::user())
+                <li class="active"><a href="{{ route('landType.index') }}">Land Types's List</a></li>
+            @endcan
+        </ol>
+    </section>
 
 
-            @if(session()->has('message'))
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        @if(session()->has('message'))
+                            <div class="alert alert-success">
+                                <button type="button" class="close" data-dismiss="alert" aira-hidden="true">
+                                    &times;
+                                </button>
+                                <strong>land Type</strong>
+                                {{session()->get('message')}}
+                            </div>
+                        @endif
+                    </div>
 
-                <div class="alert alert-success">
+                    <div class="box-body table-responsive no-padding">
+                        <table id="example1" class="table table-bordered table-striped table-responsive">
+                            <thead>
+                            <tr>
+                                <th>Sl.</th>
+                                <th>Land Type Name Bangla</th>
+                                <th>Land Type Name English</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            @php
+                             $i =1;
+                            @endphp
+                            <tbody>
+                            @foreach($landTypes as $landType)
+                                <tr>
+                                    <td>{{$i++}}.</td>
+                                    <td>{{$landType->name_bn}}</td>
+                                    <td>{{$landType->name_en}}</td>
 
-                    <button type="button" class="close" data-dismiss="alert" aira-hidden="true">
-                        &times;
-                    </button>
-                    <strong>Land Type</strong>
-                    {{session()->get('message')}}
-
+                                    <td nowrap>
+                                        <form action="{{ route('landType.destroy',$landType->id)}}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                            <a class="btn btn-primary alert-dark fa fa-info-circle" href="{{route('landType.show',$landType->id)}}"></a>
+                                            @can('landType.update',\Illuminate\Support\Facades\Auth::user())
+                                                <a class="btn btn-primary alert-success fa fa-pencil" href="{{route('landType.edit',$landType->id)}}"></a>
+                                            @endcan
+                                            @can('landType.delete',\Illuminate\Support\Facades\Auth::user())
+                                                <button class="btn btn-primary alert-danger fa fa-trash" onclick="return confirm('Are you sure?')"  type="submit"></button>
+                                            @endcan
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Sl.</th>
+                                <th>Land Type Name Bangla </th>
+                                <th>Land Type Name English</th>
+                                <th>Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
                 </div>
-
-            @endif
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
         </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <table id="example1" class="table table-bordered table-striped table-responsive">
-                <thead>
-                <tr>
-                    <th>Land Type Name Bangla</th>
-                    <th>Land Type Name English</th>
-                    <th>Delete</th>
-                    <th>Edit</th>
-                    <th>Details</th>
-
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($landTypes as $landType)
-                    <tr>
-                        <td>{{$landType->name_bn}}</td>
-                        <td>{{$landType->name_en}}</td>
-
-                        <td>
-
-                            <form action="{{ route('landType.destroy',$landType->id)}}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-primary alert-danger fa fa-trash" onclick="return confirm('Are you sure?')"  type="submit"></button>
-                            </form>
-                        </td>
-
-                        <td><a class="btn btn-primary alert-success fa fa-pencil" href="{{route('landType.edit',$landType->id)}}"></a></td>
-                        <td><a class="btn btn-primary alert-dark fa fa-info-circle" href="{{route('landType.show',$landType->id)}}"></a></td>
-                    </tr>
-                @endforeach
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th>Land Type Name Bangla </th>
-                    <th>Land Type Name English</th>
-                    <th>Delete</th>
-                    <th>Edit</th>
-                    <th>Details</th>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-        <!-- /.box-body -->
-    </div>
+        <!-- /.row -->
+    </section>
 
 
 

@@ -1,83 +1,91 @@
 @extends('admin.master')
 @section('content')
 
-    <div class="box">
-        <div class="box-header" style="text-align: center">
-            <h3 class="box-title">Cultivation Type List</h3>
-
-            @if(count($errors)>0)
-
-                <ul>
-                    @foreach($errors->all() as $error)
-
-                        <li class="alert alert-danger">{{$error}}</li>
-
-                    @endforeach
-                </ul>
-
-            @endif
+    <section class="content-header">
+        <h1>
+            Cultivation Type's List
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            @can('cultivationTypeList',\Illuminate\Support\Facades\Auth::user())
+                <li class="active"><a href="{{ route('cultivationType.index') }}">Cultivation Type's List</a></li>
+            @endcan
+        </ol>
+    </section>
 
 
-            @if(session()->has('message'))
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        @if(session()->has('message'))
+                            <div class="alert alert-success">
+                                <button type="button" class="close" data-dismiss="alert" aira-hidden="true">
+                                    &times;
+                                </button>
+                                <strong>Cultivation Type</strong>
+                                {{session()->get('message')}}
+                            </div>
+                        @endif
+                    </div>
 
-                <div class="alert alert-success">
+                    <div class="box-body table-responsive no-padding">
+                        <table id="example1" class="table table-bordered table-striped ">
+                            <thead>
+                            <tr>
+                                <th>Sl.</th>
+                                <th>Cultivation Type Bangla Name</th>
+                                <th>Cultivation Type English Name</th>
+                                <th>Action</th>
 
-                    <button type="button" class="close" data-dismiss="alert" aira-hidden="true">
-                        &times;
-                    </button>
-                    <strong>Cultivation Type</strong>
-                    {{session()->get('message')}}
+                            </tr>
+                            </thead>
+                            @php
+                             $i=1;
+                            @endphp
+                            <tbody>
+                            @foreach($cultivationTypes as $cultivationType)
+                                <tr>
+                                    <td>{{$i++}}.</td>
+                                    <td>{{$cultivationType->name_bn}}</td>
+                                    <td>{{$cultivationType->name_en}}</td>
 
+                                    <td nowrap>
+
+                                        <form action="{{route('cultivationType.destroy',$cultivationType->id)}}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                            <a class="btn btn-primary alert-dark fa fa-info-circle" href="{{route('cultivationType.show',$cultivationType->id)}}"></a>
+                                            @can('cultivationType.update',\Illuminate\Support\Facades\Auth::user())
+                                                <a class="btn btn-primary alert-success fa fa-pencil" href="{{route('cultivationType.edit',$cultivationType->id)}}"></a>
+                                            @endcan
+                                            @can('cultivationType.delete',\Illuminate\Support\Facades\Auth::user())
+                                                <button class="btn btn-primary alert-danger fa fa-trash" onclick="return confirm('Are you sure?')"  type="submit"></button>
+                                            @endcan
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Sl.</th>
+                                <th>Cultivation Type Bangla Name</th>
+                                <th>Cultivation Type English Name</th>
+                                <th>Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
                 </div>
-
-            @endif
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <table id="example1" class="table table-bordered table-striped table-responsive">
-                <thead>
-                <tr>
-                    <th>Cultivation Type Bangla Name</th>
-                    <th>Cultivation Type English Name</th>
-                    <th>Delete</th>
-                    <th>Edit</th>
-                    <th>Details</th>
-
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($cultivationTypes as $cultivationType)
-                    <tr>
-                        <td>{{$cultivationType->name_bn}}</td>
-                        <td>{{$cultivationType->name_en}}</td>
-
-                        <td>
-
-                            <form action="{{route('cultivationType.destroy',$cultivationType->id)}}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-primary alert-danger fa fa-trash" onclick="return confirm('Are you sure?')"  type="submit"></button>
-                            </form>
-                        </td>
-
-                        <td><a class="btn btn-primary alert-success fa fa-pencil" href="{{route('cultivationType.edit',$cultivationType->id)}}"></a></td>
-                        <td><a class="btn btn-primary alert-dark fa fa-info-circle" href="{{route('cultivationType.show',$cultivationType->id)}}"></a></td>
-                    </tr>
-                @endforeach
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th>Cultivation Type Bangla Name</th>
-                    <th>Cultivation Type English Name</th>
-                    <th>Delete</th>
-                    <th>Edit</th>
-                    <th>Details</th>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-        <!-- /.box-body -->
-    </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+    </section>
 
 
 

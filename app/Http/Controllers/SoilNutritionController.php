@@ -12,6 +12,7 @@ use App\Texture;
 use App\Upazila;
 use Illuminate\Http\Request;
 use App\Http\Requests\SoilNutritionValidation;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\OldSoilNutrition;
 
@@ -25,51 +26,57 @@ class SoilNutritionController extends Controller
 
     public function index()
     {
+        if (Auth::user()->can('soilNutritionList')) {
 
-        $soilNutritions = DB::table('soil_nutrition as snt')
-            ->join('land_types as lt','snt.land_type_id','=','lt.id')
-            ->join('land_classes as lc','snt.land_Class_id','=','lc.id')
-            ->join('textures as t','snt.texture_id','=','t.id')
-            ->join('cultivation_types as ct','snt.cultivation_type_id','=','ct.id')
-            ->join('districts as dis','snt.district_id','=','dis.id')
-            ->join('upazilas as upa','snt.upazila_id','=','upa.id')
-            ->join('states as spH','snt.stateOfpH_id','=','spH.id')
-            ->join('states as soM','snt.stateOforganicMatter_id','=','soM.id')
-            ->join('states as sCa','snt.stateOfcalcium_id','=','sCa.id')
-            ->join('states as smg','snt.stateOfmagnesium_id','=','smg.id')
-            ->join('states as sK','snt.stateOfpotassium_id','=','sK.id')
-            ->join('states as sN','snt.stateOfnitrogen_id','=','sN.id')
-            ->join('states as sP','snt.stateOfphosphorus_id','=','sP.id')
-            ->join('states as sS','snt.stateOfsulfur_id','=','sS.id')
-            ->join('states as sB','snt.stateOfboron_id','=','sB.id')
-            ->join('states as sCu','snt.stateOfcopper_id','=','sCu.id')
-            ->join('states as sFe','snt.stateOfferrous_id','=','sFe.id')
-            ->join('states as sMn','snt.stateOfmanganese_id','=','sMn.id')
-            ->join('states as sZn','snt.stateOfzinc_id','=','sZn.id')
+            $soilNutritions = DB::table('soil_nutrition as snt')
+                ->join('land_types as lt','snt.land_type_id','=','lt.id')
+                ->join('land_classes as lc','snt.land_Class_id','=','lc.id')
+                ->join('textures as t','snt.texture_id','=','t.id')
+                ->join('cultivation_types as ct','snt.cultivation_type_id','=','ct.id')
+                ->join('districts as dis','snt.district_id','=','dis.id')
+                ->join('upazilas as upa','snt.upazila_id','=','upa.id')
+                ->join('states as spH','snt.stateOfpH_id','=','spH.id')
+                ->join('states as soM','snt.stateOforganicMatter_id','=','soM.id')
+                ->join('states as sCa','snt.stateOfcalcium_id','=','sCa.id')
+                ->join('states as smg','snt.stateOfmagnesium_id','=','smg.id')
+                ->join('states as sK','snt.stateOfpotassium_id','=','sK.id')
+                ->join('states as sN','snt.stateOfnitrogen_id','=','sN.id')
+                ->join('states as sP','snt.stateOfphosphorus_id','=','sP.id')
+                ->join('states as sS','snt.stateOfsulfur_id','=','sS.id')
+                ->join('states as sB','snt.stateOfboron_id','=','sB.id')
+                ->join('states as sCu','snt.stateOfcopper_id','=','sCu.id')
+                ->join('states as sFe','snt.stateOfferrous_id','=','sFe.id')
+                ->join('states as sMn','snt.stateOfmanganese_id','=','sMn.id')
+                ->join('states as sZn','snt.stateOfzinc_id','=','sZn.id')
 
 
-            ->select('snt.*','lt.name_en as ltN','lc.name_en as lCN','t.name_en as tN','ct.name_en as cTN','dis.name as disN','upa.name as upaN','spH.name_en as spH','soM.name_en as soM','sCa.name_en as sCa','smg.name_en as smg','sK.name_en as sK','sN.name_en as sN','sP.name_en as sP','sS.name_en as sS','sB.name_en as sB','sCu.name_en as sCu','sFe.name_en as sFe','sMn.name_en as sMn','sZn.name_en as sZn')
+                ->select('snt.*','lt.name_en as ltN','lc.name_en as lCN','t.name_en as tN','ct.name_en as cTN','dis.name as disN','upa.name as upaN','spH.name_en as spH','soM.name_en as soM','sCa.name_en as sCa','smg.name_en as smg','sK.name_en as sK','sN.name_en as sN','sP.name_en as sP','sS.name_en as sS','sB.name_en as sB','sCu.name_en as sCu','sFe.name_en as sFe','sMn.name_en as sMn','sZn.name_en as sZn')
 
-            ->get();
+                ->get();
 
-//        dd($fertilities);
+    //        dd($fertilities);
 
-        return view('admin.soilNutrition.list',compact('soilNutritions'));
+            return view('admin.soilNutrition.list',compact('soilNutritions'));
+            }
+        return view('admin.unauthorized');
     }
 
 
     public function create()
     {
-        $cultivationTypes = CultivationType::pluck('name_en','id');
-        $districts = District::all();
-        $landClasses = LandClass::pluck('name_en','id');
-        $landTypes = LandType::pluck('name_en','id');
-        $states = State::pluck('name_en','id');
-        $textures = Texture::pluck('name_en','id');
-        $upazilas = Upazila::all();
+        if (Auth::user()->can('soilNutrition.create')) {
+            $cultivationTypes = CultivationType::pluck('name_en','id');
+            $districts = District::all();
+            $landClasses = LandClass::pluck('name_en','id');
+            $landTypes = LandType::pluck('name_en','id');
+            $states = State::pluck('name_en','id');
+            $textures = Texture::pluck('name_en','id');
+            $upazilas = Upazila::all();
 
-//dd($cultivationTypes);
-        return view('admin.soilNutrition.create',compact('cultivationTypes','districts','landClasses','landTypes','states','textures','upazilas'));
+    //dd($cultivationTypes);
+            return view('admin.soilNutrition.create',compact('cultivationTypes','districts','landClasses','landTypes','states','textures','upazilas'));
+           }
+        return view('admin.unauthorized');
     }
 
 
@@ -157,45 +164,48 @@ class SoilNutritionController extends Controller
 
     public function edit($id)
     {
-        $soilNutrition = DB::table('soil_nutrition as snt')
-            ->join('land_types as lt','snt.land_type_id','=','lt.id')
-            ->join('land_classes as lc','snt.land_Class_id','=','lc.id')
-            ->join('textures as t','snt.texture_id','=','t.id')
-            ->join('cultivation_types as ct','snt.cultivation_type_id','=','ct.id')
-            ->join('districts as dis','snt.district_id','=','dis.id')
-            ->join('upazilas as upa','snt.upazila_id','=','upa.id')
-            ->join('states as spH','snt.stateOfpH_id','=','spH.id')
-            ->join('states as soM','snt.stateOforganicMatter_id','=','soM.id')
-            ->join('states as sCa','snt.stateOfcalcium_id','=','sCa.id')
-            ->join('states as smg','snt.stateOfmagnesium_id','=','smg.id')
-            ->join('states as sK','snt.stateOfpotassium_id','=','sK.id')
-            ->join('states as sN','snt.stateOfnitrogen_id','=','sN.id')
-            ->join('states as sP','snt.stateOfphosphorus_id','=','sP.id')
-            ->join('states as sS','snt.stateOfsulfur_id','=','sS.id')
-            ->join('states as sB','snt.stateOfboron_id','=','sB.id')
-            ->join('states as sCu','snt.stateOfcopper_id','=','sCu.id')
-            ->join('states as sFe','snt.stateOfferrous_id','=','sFe.id')
-            ->join('states as sMn','snt.stateOfmanganese_id','=','sMn.id')
-            ->join('states as sZn','snt.stateOfzinc_id','=','sZn.id')
+        if (Auth::user()->can('soilNutrition.update')) {
+            $soilNutrition = DB::table('soil_nutrition as snt')
+                ->join('land_types as lt','snt.land_type_id','=','lt.id')
+                ->join('land_classes as lc','snt.land_Class_id','=','lc.id')
+                ->join('textures as t','snt.texture_id','=','t.id')
+                ->join('cultivation_types as ct','snt.cultivation_type_id','=','ct.id')
+                ->join('districts as dis','snt.district_id','=','dis.id')
+                ->join('upazilas as upa','snt.upazila_id','=','upa.id')
+                ->join('states as spH','snt.stateOfpH_id','=','spH.id')
+                ->join('states as soM','snt.stateOforganicMatter_id','=','soM.id')
+                ->join('states as sCa','snt.stateOfcalcium_id','=','sCa.id')
+                ->join('states as smg','snt.stateOfmagnesium_id','=','smg.id')
+                ->join('states as sK','snt.stateOfpotassium_id','=','sK.id')
+                ->join('states as sN','snt.stateOfnitrogen_id','=','sN.id')
+                ->join('states as sP','snt.stateOfphosphorus_id','=','sP.id')
+                ->join('states as sS','snt.stateOfsulfur_id','=','sS.id')
+                ->join('states as sB','snt.stateOfboron_id','=','sB.id')
+                ->join('states as sCu','snt.stateOfcopper_id','=','sCu.id')
+                ->join('states as sFe','snt.stateOfferrous_id','=','sFe.id')
+                ->join('states as sMn','snt.stateOfmanganese_id','=','sMn.id')
+                ->join('states as sZn','snt.stateOfzinc_id','=','sZn.id')
 
 
-            ->select('snt.*','lt.name_en as ltN','lc.name_en as lCN','t.name_en as tN','ct.name_en as cTN','dis.name as disN','upa.name as upaN','spH.name_en as spH','soM.name_en as soM','sCa.name_en as sCa','smg.name_en as smg','sK.name_en as sK','sN.name_en as sN','sP.name_en as sP','sS.name_en as sS','sB.name_en as sB','sCu.name_en as sCu','sFe.name_en as sFe','sMn.name_en as sMn','sZn.name_en as sZn')
+                ->select('snt.*','lt.name_en as ltN','lc.name_en as lCN','t.name_en as tN','ct.name_en as cTN','dis.name as disN','upa.name as upaN','spH.name_en as spH','soM.name_en as soM','sCa.name_en as sCa','smg.name_en as smg','sK.name_en as sK','sN.name_en as sN','sP.name_en as sP','sS.name_en as sS','sB.name_en as sB','sCu.name_en as sCu','sFe.name_en as sFe','sMn.name_en as sMn','sZn.name_en as sZn')
 
-            ->where('snt.id','=',$id)
+                ->where('snt.id','=',$id)
 
-            ->first();
+                ->first();
 
-        $cultivationTypes = CultivationType::pluck('name_en','id');
-        $districts = District::all();
-        $landClasses = LandClass::pluck('name_en','id');
-        $landTypes = LandType::pluck('name_en','id');
-        $states = State::pluck('name_en','id');
-        $textures = Texture::pluck('name_en','id');
-        $upazilas = Upazila::all();
+            $cultivationTypes = CultivationType::pluck('name_en','id');
+            $districts = District::all();
+            $landClasses = LandClass::pluck('name_en','id');
+            $landTypes = LandType::pluck('name_en','id');
+            $states = State::pluck('name_en','id');
+            $textures = Texture::pluck('name_en','id');
+            $upazilas = Upazila::all();
 
-//        dd($fertilities);
+    //        dd($fertilities);
 
-        return view('admin.soilNutrition.edit',compact('soilNutrition','cultivationTypes','districts','landClasses','landTypes','states','textures','upazilas'));
+            return view('admin.soilNutrition.edit',compact('soilNutrition','cultivationTypes','districts','landClasses','landTypes','states','textures','upazilas'));
+           }
+        return view('admin.unauthorized');
     }
 
 
@@ -294,10 +304,13 @@ class SoilNutritionController extends Controller
 
     public function destroy($id)
     {
-        $soilNutrition = SoilNutrition::find($id);
-        $soilNutrition->delete();
+        if (Auth::user()->can('soilNutrition.delete')) {
+            $soilNutrition = SoilNutrition::find($id);
+            $soilNutrition->delete();
 
-        session()->flash('message','has been deleted');
-        return redirect('soilNutrition');
+            session()->flash('message','has been deleted');
+            return redirect('soilNutrition');
+            }
+        return view('admin.unauthorized');
     }
 }

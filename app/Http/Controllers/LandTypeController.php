@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\LandType;
 use Illuminate\Http\Request;
 use App\Http\Requests\LandTypeValidation;
+use Illuminate\Support\Facades\Auth;
 
 class LandTypeController extends Controller
 {
@@ -15,15 +16,21 @@ class LandTypeController extends Controller
 
     public function index()
     {
-        $landTypes = LandType::all();
+        if (Auth::user()->can('landTypeList')) {
+            $landTypes = LandType::all();
 
-        return view('admin.landType.list',compact('landTypes'));
+            return view('admin.landType.list',compact('landTypes'));
+            }
+        return view('admin.unauthorized');
     }
 
 
     public function create()
     {
-        return view('admin.landType.create');
+        if (Auth::user()->can('landType.create')) {
+            return view('admin.landType.create');
+        }
+        return view('admin.unauthorized');
     }
 
 
@@ -50,9 +57,12 @@ class LandTypeController extends Controller
 
     public function edit($id)
     {
-        $landType = LandType::find($id);
+        if (Auth::user()->can('landType.update')) {
+            $landType = LandType::find($id);
 
-        return view('admin.landType.edit',compact('landType'));
+            return view('admin.landType.edit',compact('landType'));
+            }
+        return view('admin.unauthorized');
     }
 
 
@@ -71,11 +81,14 @@ class LandTypeController extends Controller
 
     public function destroy($id)
     {
-        $landType = LandType::find($id);
-        $landType->delete();
+          if (Auth::user()->can('landType.delete')) {
+            $landType = LandType::find($id);
+            $landType->delete();
 
-        session()->flash('message','has been deleted');
+            session()->flash('message','has been deleted');
 
-        return redirect('landType');
+            return redirect('landType');
+            }
+        return view('admin.unauthorized');
     }
 }

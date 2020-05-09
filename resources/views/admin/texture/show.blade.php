@@ -1,5 +1,17 @@
 @extends('admin.master')
 @section('content')
+    <section class="content-header">
+        <h1>
+            {{$texture->name_en}} Details
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="{{route('home')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            @can('textureList',\Illuminate\Support\Facades\Auth::user())
+            <li class="active"><a href="{{ route('texture.index') }}">Texture's List</a></li>
+            @endcan
+        </ol>
+    </section>
+    <br>
     <div class="content">
 
         <div class="col-md-6" {{--style="padding: 0 0 0 280px"--}}>
@@ -24,16 +36,20 @@
 
 
                     <div class="row"></div>
-                    <div class="col-md-2">
-                        <a href="{{route('texture.edit',$texture->id)}}" type="submit"  class="btn btn-info">Edit</a>
-                    </div>
-                    <div class="col-md-2">
-                        <form action="{{ route('texture.destroy',$texture->id)}}" method="post">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-primary alert-danger" onclick="return confirm('Are you sure?')"  type="submit">Delete</button>
-                        </form>
-                    </div>
+                    @can('texture.update',\Illuminate\Support\Facades\Auth::user())
+                        <div class="col-md-2">
+                            <a href="{{route('texture.edit',$texture->id)}}" type="submit"  class="btn btn-info">Edit</a>
+                        </div>
+                    @endcan
+                    @can('texture.delete',\Illuminate\Support\Facades\Auth::user())
+                        <div class="col-md-2">
+                            <form action="{{ route('texture.destroy',$texture->id)}}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-primary alert-danger" onclick="return confirm('Are you sure?')"  type="submit">Delete</button>
+                            </form>
+                        </div>
+                    @endcan
                 </div>
 
             </div>
